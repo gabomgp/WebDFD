@@ -2,40 +2,115 @@
  * Created by Admin on 14/11/2014.
  */
 
+module WebDFD.Debugger
+{
+    export interface  IDebugger
+    {
+        runToEnd();
+        markBreakpoint(procedure:string, status:boolean);
+        runToNextBreakpoint();
+        runToNextLogicOperation();
+        runToOuterCall();
+        getCallStack():ICallStack;
+        getWatcher():IDebuggerWatcher;
+        status:StatusDebugger;
+    }
+
+    export enum StatusDebugger
+    {
+        Created,
+        Running,
+        Paused,
+        Stopped
+    }
+
+    export interface ICallStack
+    {
+
+    }
+
+    export interface IStackFrame
+    {
+        procedure:Core.IProcedure;
+
+    }
+}
+
 module WebDFD.Core {
     export interface ILogicOperation {
-        tipoOperacionLogica:LogicOperationType;
+        logicOperationType:LogicOperationType;
+        breakpoint:boolean;
     }
 
-    export interface IAssiggment  {
-        identificador:string;
-        expresion:IExpression;
+    export interface IGraphicalElement
+    {
+        calculateAppearance();
+        x:number
+        y:number
+        width:number;
+        height:number;
     }
 
-    export interface IFor:ILogicOperation {
-        idenficiador:string;
-        valorInicial:IExpression;
-        valorFinal:IExpression;
-        incremento:IExpression;
+    export interface IO
+    {
+        print(message:string);
+        read():any;
     }
 
-    export interface  IWhile:ILogicOperation {
-        condicion:IExpression;
+
+
+    export interface IProcedure
+    {
+        name:string;
+        paramaters:string[];
+        description:string;
+        body:ILogicOperation[];
     }
 
-    export interface  IConditional:ILogicOperation {
-        condicion:IExpression;
-        flujoVerdadero:ILogicOperation[];
-        flujoFalso:ILogicOperation[];
-    }
-    export interface IRead:ILogicOperation {
-        textoMostrado:string;
-        idenficador:string;
+    export interface IUniverse
+    {
+        procedures:IProcedure[]
     }
 
-    interface IExpression {
-        sinParsear:string;
-        parseada:any;
+    export interface IAssignment extends ILogicOperation  {
+        identifier:string;
+        expression:IExpression;
+    }
+
+    export interface IFor extends ILogicOperation {
+        identifier:string;
+        initialValue:IExpression;
+        finalValue:IExpression;
+        increment:IExpression;
+    }
+
+    export interface  IWhile extends ILogicOperation {
+        condition:IExpression;
+    }
+
+    export interface  IConditional extends ILogicOperation {
+        condition:IExpression;
+        trueBranch:ILogicOperation[];
+        falseBranch:ILogicOperation[];
+    }
+    export interface IRead extends ILogicOperation {
+        displayedText:string;
+        identifier:string;
+    }
+
+    export interface IPrint extends ILogicOperation
+    {
+        displayed:IExpression;
+    }
+
+    export interface  ICall extends ILogicOperation
+    {
+        procedure:string
+    }
+
+    export interface IExpression {
+        original:string;
+        parsed:any;
     }
 
     export enum LogicOperationType
